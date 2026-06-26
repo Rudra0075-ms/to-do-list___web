@@ -1,24 +1,58 @@
-const taskInput=document.getElementById("taskInput");
+const taskInput = document.getElementById("taskInput");
+const addBtn = document.getElementById("addBtn");
+const taskList = document.getElementById("taskList");
 
-const addBtn=document.getElementById("addBtn");
+const searchInput = document.getElementById("searchInput");
+const prioritySelect = document.getElementById("priority");
 
-const taskList=document.getElementById("taskList");
+const counter = document.getElementById("counter");
+const clearCompletedBtn = document.getElementById("clearCompleted");
+const clearAllBtn = document.getElementById("clearAll");
 
-let tasks=JSON.parse(localStorage.getItem("tasks"))||[];
+let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
-function saveTasks(){
+function saveTasks() {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+}
 
-    localStorage.setItem("tasks",JSON.stringify(tasks));
+function updateCounter() {
+
+    const completed = tasks.filter(task => task.completed).length;
+    const pending = tasks.length - completed;
+
+    counter.innerHTML =
+        `Total: ${tasks.length} | Completed: ${completed} | Pending: ${pending}`;
+}
+
+function sortTasks() {
+
+    const order = {
+        High:1,
+        Medium:2,
+        Low:3
+    };
+
+    tasks.sort((a,b)=>order[a.priority]-order[b.priority]);
 
 }
 
-function renderTasks(){
+function renderTasks(filter="") {
 
     taskList.innerHTML="";
 
+    sortTasks();
+
     tasks.forEach((task,index)=>{
 
+        if(
+            task.text.toLowerCase().includes(filter.toLowerCase())===false
+        ){
+            return;
+        }
+
         const li=document.createElement("li");
+
+        li.classList.add(task.priority.toLowerCase());
 
         const details=document.createElement("div");
 
@@ -32,6 +66,9 @@ function renderTasks(){
 
         details.innerHTML=`
         <strong>${task.text}</strong>
+        <br>
+        <small>Priority : ${task.priority}</small>
+        <br>
         <small>${task.date}</small>
         `;
 
@@ -41,9 +78,38 @@ function renderTasks(){
 
             saveTasks();
 
-            renderTasks();
+            renderTasks(searchInput.value);
 
         };
+
+        const btnBox=document.createElement("div");
+
+        btnBox.style.display="flex";
+        btnBox.style.gap="8px";
+
+        // Edit Button
+
+        const edit=document.createElement("button");
+
+        edit.innerHTML="✏";
+
+        edit.onclick=()=>{
+
+            const updated=prompt("Edit Task",task.text);
+
+            if(updated && updated.trim()!==""){
+
+                tasks[index].text=updated.trim();
+
+                saveTasks();
+
+                renderTasks(searchInput.value);
+
+            }
+
+        };
+
+        // Delete Button
 
         const del=document.createElement("button");
 
@@ -53,21 +119,29 @@ function renderTasks(){
 
         del.onclick=()=>{
 
-            tasks.splice(index,1);
+            if(confirm("Delete this task?")){
 
-            saveTasks();
+                tasks.splice(index,1);
 
-            renderTasks();
+                saveTasks();
+
+                renderTasks(searchInput.value);
+
+            }
 
         };
 
-        li.appendChild(details);
+        btnBox.appendChild(edit);
+        btnBox.appendChild(del);
 
-        li.appendChild(del);
+        li.appendChild(details);
+        li.appendChild(btnBox);
 
         taskList.appendChild(li);
 
     });
+
+    updateCounter();
 
 }
 
@@ -77,27 +151,27 @@ function addTask(){
 
     if(text===""){
 
-        alert("Please enter a task");
+        alert("Please enter a task.");
 
         return;
 
     }
 
-    const date=new Date().toLocaleString();
-
     tasks.push({
 
-        text,
+        text:text,
 
-        date,
+        completed:false,
 
-        completed:false
+        priority:prioritySelect.value,
+
+        date:new Date().toLocaleString()
 
     });
 
     saveTasks();
 
-    renderTasks();
+    renderTasks(searchInput.value);
 
     taskInput.value="";
 
@@ -110,6 +184,36 @@ taskInput.addEventListener("keypress",(e)=>{
     if(e.key==="Enter"){
 
         addTask();
+
+    }
+
+});
+
+searchInput.addEventListener("input",()=>{
+
+    renderTasks(searchInput.value);
+
+});
+
+clearCompletedBtn.addEventListener("click",()=>{
+
+    tasks=tasks.filter(task=>!task.completed);
+
+    saveTasks();
+
+    renderTasks(searchInput.value);
+
+});
+
+clearAllBtn.addEventListener("click",()=>{
+
+    if(confirm("Delete ALL tasks?")){
+
+        tasks=[];
+
+        saveTasks();
+
+        renderTasks();
 
     }
 
