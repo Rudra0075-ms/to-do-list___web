@@ -1,0 +1,188 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Poppins,sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#667eea,#764ba2);
+    min-height:100vh;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    padding:20px;
+}
+
+.container{
+
+    width:100%;
+    max-width:500px;
+
+    background:rgba(255,255,255,.15);
+
+    backdrop-filter:blur(12px);
+
+    border-radius:20px;
+
+    padding:30px;
+
+    box-shadow:0 15px 35px rgba(0,0,0,.25);
+
+}
+
+h1{
+    text-align:center;
+    color:white;
+    margin-bottom:25px;
+}
+
+.input-area{
+
+    display:flex;
+    gap:10px;
+}
+
+input{
+
+    flex:1;
+
+    padding:14px;
+
+    border:none;
+
+    border-radius:10px;
+
+    font-size:16px;
+
+    outline:none;
+}
+
+button{
+
+    padding:14px 22px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#00c853;
+
+    color:white;
+
+    font-size:16px;
+
+    cursor:pointer;
+
+    transition:.3s;
+}
+
+button:hover{
+
+    background:#00a844;
+}
+
+ul{
+
+    margin-top:25px;
+
+    list-style:none;
+}
+
+li{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    background:white;
+
+    padding:15px;
+
+    margin-bottom:12px;
+
+    border-radius:12px;
+
+    animation:fade .3s ease;
+}
+
+.task-details{
+
+    flex:1;
+
+    cursor:pointer;
+}
+
+.completed{
+
+    text-decoration:line-through;
+
+    color:gray;
+}
+
+small{
+
+    display:block;
+
+    margin-top:5px;
+
+    color:#777;
+
+    font-size:12px;
+}
+
+.delete{
+
+    background:red;
+
+    color:white;
+
+    border:none;
+
+    border-radius:8px;
+
+    padding:8px 12px;
+
+    cursor:pointer;
+}
+
+.delete:hover{
+
+    background:darkred;
+}
+
+@keyframes fade{
+
+    from{
+
+        opacity:0;
+        transform:translateY(-10px);
+
+    }
+
+    to{
+
+        opacity:1;
+        transform:translateY(0);
+
+    }
+
+}
+
+@media(max-width:500px){
+
+    .input-area{
+
+        flex-direction:column;
+    }
+
+    button{
+
+        width:100%;
+    }
+
+}
